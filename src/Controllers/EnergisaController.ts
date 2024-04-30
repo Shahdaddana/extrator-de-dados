@@ -17,9 +17,9 @@ export class EnergisaController {
         return await this.energisaService.receberCodigoPixLimite(matricula)
     }
 
-    @Get("teste")
+    @Get("ping")
     async teste(): Promise<string> {
-        return "ola"
+        return "pong"
     }
 
 }
