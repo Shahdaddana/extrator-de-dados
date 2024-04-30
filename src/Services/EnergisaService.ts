@@ -12,19 +12,10 @@ export class EnergisaService {
     private readonly energisaRepository: EnergisaRepository,
     ) {}
     
-    async teste() {
-        return this.energisaRepository.teste()
-    }
-
     async esperar(time: number) {
         return new Promise(function(resolve) { 
             setTimeout(resolve, time)
         })
-    }
-
-    async receberCodigoPix(website: string, matricula: string): Promise<{}>{
-        return await this.energisaRepository.teste()
-    
     }
 
     async abrirChat(website: string): Promise<void>{
@@ -53,9 +44,9 @@ export class EnergisaService {
         await falarComGisa.click()
     }
 
-    async receberCodigoPix2(matricula: string): Promise<string>{
+    async receberCodigoPix(matricula: string): Promise<string>{
         const browser = await launch({
-            headless:  false,
+            headless:  true,
             //defaultViewport: false,
             devtools: false
         })
@@ -99,6 +90,25 @@ export class EnergisaService {
         const posicaoMenorDepois = conteudoCortado.indexOf("<", posicaoPix)
         const qrCode = conteudoCortado.substring(posicaoMaiorAntes + 1, posicaoMenorDepois)
         await browser.close()
+        if (!qrCode.includes("pix"))
+            return "Erro ao extrair código"
         return qrCode
+    }
+
+    async receberCodigoPixLimite(matricula: string): Promise<string> {
+        const tempoLimite = 120000 // 2 minutos
+        try {
+            const resultado = await Promise.race([
+                this.receberCodigoPix(matricula),
+                new Promise<string>((resolve, reject) => {
+                    setTimeout(() => {
+                        reject("Tempo limite excedido!");
+                    }, tempoLimite);
+                })
+            ])
+            return resultado
+        } catch (error) {
+            return "Erro"
+        }
     }
 }

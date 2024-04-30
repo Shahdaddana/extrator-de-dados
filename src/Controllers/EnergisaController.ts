@@ -10,11 +10,16 @@ export class EnergisaController {
         private readonly energisaService: EnergisaService,
     ) {}
 
-    @Get()
+    @Get("receberCodigoPix")
     async receberCodigoPix(
-        @Query("website") website: string,
         @Query("matricula") matricula: string,
-    ): Promise<{}> {
-        return await this.energisaService.teste()
+    ): Promise<string> {
+        return await this.energisaService.receberCodigoPixLimite(matricula)
     }
+
+    @Get("teste")
+    async teste(): Promise<string> {
+        return "ola"
+    }
+
 }
